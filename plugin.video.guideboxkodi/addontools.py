@@ -53,5 +53,8 @@ class AddonHelper(dict):
     def is_platform(platform):
         return xbmc.getCondVisibility('System.Platform.' + platform)
         
-    def get_string(id)
+    def get_string(self, id)
         return self['xbmcaddon'].getLocalizedString(id)
+
+    def get_setting(self, id)
+        return self['xbmcaddon'].getSetting(id)
