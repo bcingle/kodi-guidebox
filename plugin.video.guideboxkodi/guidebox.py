@@ -11,10 +11,10 @@ class Guidebox:
     provided by the Guidebox API.
     """
 
-    __apiKey = "rKt8jl2G47wjhqAVXtQcAYirK8AnYtw6"
+    __apiKey = ""
     __version = "v1.43"
     __region = "US"
-    __baseUrl = "https://api-public.guidebox.com/" + __version + "/" + __region + "/" + __apiKey
+    __baseUrl = ""
 
     __channelTypes = {
         "all": "all",
@@ -22,7 +22,9 @@ class Guidebox:
         "online": "online"
     }
 
-    def __init__(self):
+    def __init__(self, apiKey):
+        Guidebox.__apiKey = apiKey
+        Guidebox.__baseUrl = "https://api-public.guidebox.com/" + __version + "/" + __region + "/" + __apiKey
         pass
 
     @staticmethod
