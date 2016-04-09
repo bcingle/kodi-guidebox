@@ -90,23 +90,23 @@ rootFolders = {
         "thumbnail": None,
         "subfolders": [],
         "subfolder_builder": lambda: build_channel_folders()
-    },
-    "browseShows": {
-        "label": "Browse Shows",
-        "id": "browseShows",
-        "icon": None,
-        "thumbnail": None,
-        "subfolders": [],
-        "subfolder_builder": lambda: build_channel_folders()
-    },
-    "browseFavorites": {
-        "label": "Browse Favorites",
-        "id": "browseFavorites",
-        "icon": None,
-        "thumbnail": None,
-        "subfolders": [],
-        "subfolder_builder": lambda: {}
-    }
+    }#,
+    # "browseShows": {
+    #     "label": "Browse Shows",
+    #     "id": "browseShows",
+    #     "icon": None,
+    #     "thumbnail": None,
+    #     "subfolders": [],
+    #     "subfolder_builder": lambda: build_channel_folders()
+    # },
+    # "browseFavorites": {
+    #     "label": "Browse Favorites",
+    #     "id": "browseFavorites",
+    #     "icon": None,
+    #     "thumbnail": None,
+    #     "subfolders": [],
+    #     "subfolder_builder": lambda: {}
+    # }
 }
 
 if selectedMovie:
@@ -143,7 +143,7 @@ elif selectedFolder:
         # Some folders require population of subfolders from an API
         folder["subfolder_builder"]()
     else:
-        # other are predefined
+        # others are predefined
         for folderName in folder["subfolders"]:
             subfolder = rootFolders[folderName]
             addonHelper.add_folder(subfolder["label"], {"folder": folderName}, subfolder["icon"], subfolder["thumbnail"])
