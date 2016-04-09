@@ -2,6 +2,7 @@ import urlparse
 import urllib
 import xbmcgui
 import xbmcplugin
+import xbmcaddon
 import xbmc
 
 class AddonHelper(dict):
@@ -11,6 +12,7 @@ class AddonHelper(dict):
     '''
     def __init__(self, args):
         self['base_url'] = args[0]
+        self['xbmcaddon'] = xbmcaddon.Addon()
         print "Base URL: " + str(self['base_url'])
         self['addon_handle'] = int(args[1])
         print "Addon Handle: " + str(self['addon_handle'])
@@ -50,3 +52,6 @@ class AddonHelper(dict):
     @staticmethod
     def is_platform(platform):
         return xbmc.getCondVisibility('System.Platform.' + platform)
+        
+    def get_string(id)
+        return self['xbmcaddon'].getLocalizedString(id)
