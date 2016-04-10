@@ -24,7 +24,7 @@ class Guidebox:
 
     def __init__(self, apiKey):
         Guidebox.__apiKey = apiKey
-        Guidebox.__baseUrl = "https://api-public.guidebox.com/" + __version + "/" + __region + "/" + __apiKey
+        Guidebox.__baseUrl = "https://api-public.guidebox.com/" + Guidebox.__version + "/" + Guidebox.__region + "/" + Guidebox.__apiKey
         pass
 
     @staticmethod
