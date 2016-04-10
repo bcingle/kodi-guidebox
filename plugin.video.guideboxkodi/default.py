@@ -7,7 +7,7 @@ chromeLauncherBaseUrl = "plugin://plugin.program.chrome.launcher/"
 print "Args: " + ";".join(sys.argv)
 
 addonHelper = AddonHelper(sys.argv)
-guidebox = Guidebox(addonHelper.getSetting("guidebox-api-key"))
+guidebox = Guidebox(addonHelper.get_setting("guidebox-api-key"))
 
 selectedChannel = addonHelper.get_param("channel")
 selectedShow = addonHelper.get_param("show")
