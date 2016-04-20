@@ -23,6 +23,11 @@ class Guidebox:
     }
 
     def __init__(self, apiKey):
+        Guidebox.init(apiKey)
+        pass
+    
+    @staticmethod
+    def init(apiKey):
         Guidebox.__apiKey = apiKey
         Guidebox.__baseUrl = "https://api-public.guidebox.com/" + Guidebox.__version + "/" + Guidebox.__region + "/" + Guidebox.__apiKey
         pass
@@ -91,13 +96,22 @@ class Guidebox:
     @staticmethod
     def list_channels_by_type(type, start=0, limit=50):
         """
-        List all channels of a specific type\
+        List all channels of a specific type
         :param type: Type to load, one of self.channelTypes
         :param start: Optional start index for pagination
         :param limit: Optional result limit for pagination
         :return: A list of channels as defined by the Guidebox API
         """
         query = Guidebox.build_query(["channels", type, start, limit])
+        return Guidebox.http_get(query)
+    
+    @staticmethod
+    def fetch_channel_by_id(channelId):
+        """
+        Fetch a channel by ID
+        :param channelId: The Guidebox channel ID
+        """
+        query = Guidebox.build_query(["channel", channelId])
         return Guidebox.http_get(query)
 
     @staticmethod
@@ -120,6 +134,14 @@ class Guidebox:
         query = Guidebox.build_query(["shows", channelId, start, limit, sources, platform])
         return Guidebox.http_get(query)
 
+    @staticmethod
+    def fetch_show_info(showId):
+        """
+        Fetch information for a show, such as overview, various artwork, and cast
+        :param showId: Guidebox show ID
+        """
+        query = Guidebox.build_query(["show", showId])
+        return Guidebox.http_get(query)
 
     @staticmethod
     def list_seasons_for_show(showId):
@@ -136,7 +158,7 @@ class Guidebox:
 
 
     @staticmethod
-    def list_episode_info(episodeId):
+    def fetch_episode_info(episodeId):
         query = Guidebox.build_query(["episode", episodeId])
         return Guidebox.http_get(query)
 
