@@ -1,12 +1,20 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <strings>
     <string id="32000">Addon Settings</string>
-    <string id="32001">Fetch Page Size (the number of items to present on a page of results)</string>
+    <string id="32001">Fetch Page Size</string>
+    <string id="32002">Always use this source type</string>
+    <string id="32003">Let me choose every time</string>
+    <string id="32004">Free sources only</string>
+    <string id="32005">Subscription sources only</string>
+    <string id="32006">TV Everywhere sources only</string>
+    <string id="32007">Purchase sources only</string>
     <string id="32010">API Keys</string>
-    <string id="32011">Guidebox API Key (please supply your own if possible)</string>
-    <string id="32012">fanart.tv API Key (please supply your own if possible)</string>
-    <string id="32013">TheTVDB API Key (please supply your own if possible)</string>
-    <string id="32020">Favorites (these are modified in the addon context menu - don't edit these here)</string>
-    <string id="32021">Favorite Channels (comma separated list of channel IDs)</string>
-    <string id="32022">Favorite Shows (comma separated list of show IDs)</string>
+    <string id="32011">Guidebox API Key</string>
+    <string id="32012">fanart.tv API Key</string>
+    <string id="32013">TheTVDB API Key</string>
+    <string id="32014">TheMovieDB API Key</string>
+    <string id="32020">Favorites</string>
+    <string id="32021">Favorite Channels</string>
+    <string id="32022">Favorite Shows</string>
+
 </strings>

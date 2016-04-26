@@ -1,6 +1,5 @@
 import urllib
 import json
-from addontools import AddonHelper
 
 
 class Guidebox:
@@ -34,6 +33,7 @@ class Guidebox:
 
     @staticmethod
     def http_get(url):
+        print "Guidebox url: " + url
         response = urllib.urlopen(url)
         j = json.load(response)
         return j
@@ -129,8 +129,6 @@ class Guidebox:
 
     @staticmethod
     def list_shows_for_channel(channelId, start=0, limit=50, sources="all", platform=None):
-        if platform is None:
-            platform = Guidebox.get_platform()
         query = Guidebox.build_query(["shows", channelId, start, limit, sources, platform])
         return Guidebox.http_get(query)
 
@@ -151,8 +149,6 @@ class Guidebox:
 
     @staticmethod
     def list_episodes_for_show_season(showId, seasonNumber, start=0, limit=50, sources="all", platform=None):
-        if platform is None:
-            platform = Guidebox.get_platform()
         query = Guidebox.build_query(["show", showId, "episodes", seasonNumber, start, limit, sources, platform])
         return Guidebox.http_get(query)
 
@@ -161,13 +157,30 @@ class Guidebox:
     def fetch_episode_info(episodeId):
         query = Guidebox.build_query(["episode", episodeId])
         return Guidebox.http_get(query)
+    
 
 
     @staticmethod
-    def get_platform():
-        if AddonHelper.is_platform('Android'):
-            return 'android'
-        elif AddonHelper.is_platform('IOS'):
-            return 'ios'
-        else:
-            return 'web'
+    def get_platform(osPlatform):
+        if osPlatform in ("linux", "raspberry_pi", "win", "osx", "unknown"):
+            return "web"
+        if osPlatform in ("ios", "atv2"):
+            return "ios"
+        if osPlatform in ("android"):
+            return "android"
+        
+    @staticmethod
+    def get_show_images(showId):
+        query = Guidebox.build_query(["show", showId, "images", "all"])
+        return Guidebox.http_get(query)
+    
+    
+    @staticmethod
+    def get_episode_images(episodeId):
+        query = Guidebox.build_query(["episode", episodeId, "images", "all"])
+        return Guidebox.http_get(query)
+    
+    
+    
+    
+    
