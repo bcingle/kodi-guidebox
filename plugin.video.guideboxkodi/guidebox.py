@@ -1,6 +1,5 @@
 import urllib
 import json
-from addontools import AddonHelper
 
 
 class Guidebox:
@@ -23,12 +22,18 @@ class Guidebox:
     }
 
     def __init__(self, apiKey):
+        Guidebox.init(apiKey)
+        pass
+    
+    @staticmethod
+    def init(apiKey):
         Guidebox.__apiKey = apiKey
         Guidebox.__baseUrl = "https://api-public.guidebox.com/" + Guidebox.__version + "/" + Guidebox.__region + "/" + Guidebox.__apiKey
         pass
 
     @staticmethod
     def http_get(url):
+        print "Guidebox url: " + url
         response = urllib.urlopen(url)
         j = json.load(response)
         return j
@@ -91,13 +96,22 @@ class Guidebox:
     @staticmethod
     def list_channels_by_type(type, start=0, limit=50):
         """
-        List all channels of a specific type\
+        List all channels of a specific type
         :param type: Type to load, one of self.channelTypes
         :param start: Optional start index for pagination
         :param limit: Optional result limit for pagination
         :return: A list of channels as defined by the Guidebox API
         """
         query = Guidebox.build_query(["channels", type, start, limit])
+        return Guidebox.http_get(query)
+    
+    @staticmethod
+    def fetch_channel_by_id(channelId):
+        """
+        Fetch a channel by ID
+        :param channelId: The Guidebox channel ID
+        """
+        query = Guidebox.build_query(["channel", channelId])
         return Guidebox.http_get(query)
 
     @staticmethod
@@ -115,11 +129,17 @@ class Guidebox:
 
     @staticmethod
     def list_shows_for_channel(channelId, start=0, limit=50, sources="all", platform=None):
-        if platform is None:
-            platform = Guidebox.get_platform()
         query = Guidebox.build_query(["shows", channelId, start, limit, sources, platform])
         return Guidebox.http_get(query)
 
+    @staticmethod
+    def fetch_show_info(showId):
+        """
+        Fetch information for a show, such as overview, various artwork, and cast
+        :param showId: Guidebox show ID
+        """
+        query = Guidebox.build_query(["show", showId])
+        return Guidebox.http_get(query)
 
     @staticmethod
     def list_seasons_for_show(showId):
@@ -129,23 +149,38 @@ class Guidebox:
 
     @staticmethod
     def list_episodes_for_show_season(showId, seasonNumber, start=0, limit=50, sources="all", platform=None):
-        if platform is None:
-            platform = Guidebox.get_platform()
         query = Guidebox.build_query(["show", showId, "episodes", seasonNumber, start, limit, sources, platform])
         return Guidebox.http_get(query)
 
 
     @staticmethod
-    def list_episode_info(episodeId):
+    def fetch_episode_info(episodeId):
         query = Guidebox.build_query(["episode", episodeId])
         return Guidebox.http_get(query)
+    
 
 
     @staticmethod
-    def get_platform():
-        if AddonHelper.is_platform('Android'):
-            return 'android'
-        elif AddonHelper.is_platform('IOS'):
-            return 'ios'
-        else:
-            return 'web'
+    def get_platform(osPlatform):
+        if osPlatform in ("linux", "raspberry_pi", "win", "osx", "unknown"):
+            return "web"
+        if osPlatform in ("ios", "atv2"):
+            return "ios"
+        if osPlatform in ("android"):
+            return "android"
+        
+    @staticmethod
+    def get_show_images(showId):
+        query = Guidebox.build_query(["show", showId, "images", "all"])
+        return Guidebox.http_get(query)
+    
+    
+    @staticmethod
+    def get_episode_images(episodeId):
+        query = Guidebox.build_query(["episode", episodeId, "images", "all"])
+        return Guidebox.http_get(query)
+    
+    
+    
+    
+    
