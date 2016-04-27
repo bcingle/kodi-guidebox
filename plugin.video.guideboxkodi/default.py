@@ -10,7 +10,11 @@ chromeLauncherBaseUrl = "plugin://plugin.program.chrome.launcher/"
 print "Args: " + ";".join(sys.argv)
 
 addonHelper = AddonHelper(sys.argv)
-guidebox = Guidebox(addonHelper.get_setting("guidebox-api-key"))
+userData = addonHelper.get_user_data()
+if not userData:
+    userData = {}
+print "Addon user data: " + json.dumps(userData)
+guidebox = Guidebox(addonHelper.get_setting("guidebox-api-key"), userData)
 theMovieDB = TheMovieDB(addonHelper.get_setting("themoviedb-api-key"))
 
 action = addonHelper.get_param("action")
@@ -181,7 +185,7 @@ def build_season_folders(showId):
     show = guidebox.fetch_show_info(showId)
     seasons = guidebox.list_seasons_for_show(showId)
     for season in seasons["results"]:
-        poster = theMovieDB.get_season_poster(show["results"]["themoviedb"], season["season_number"])
+        poster = theMovieDB.get_season_poster(show["themoviedb"], season["season_number"])
         artwork = {}
         if poster:
             artwork["poster"] = poster
@@ -203,8 +207,8 @@ def build_episode_folders(showId, seasonNumber):
             artwork["fanart"] = show["fanart"]
         if "banner" in show:
             artwork["banner"] = show["banner"]
-        if "poster" in show:
-            artwork["poster"] = show["poster"]
+#        if "poster" in show:
+#            artwork["poster"] = show["poster"]
         if "thumbnail_608x342" in episode:
             artwork["thumb"] = episode["thumbnail_608x342"]
         if "season_number" in episode:
@@ -223,7 +227,7 @@ def build_episode_folders(showId, seasonNumber):
                 for castEntry in show["guest_stars"]:
                     cast.append((castEntry["name"], castEntry["character_name"]))
             listInfo["castandrole"] = cast
-        addonHelper.add_folder(episode["episode_number"] + " - " + episode["title"], path={"episode": episode["id"]}, artwork=artwork, of=len(episodes), listInfo=listInfo, mediaType="video")
+        addonHelper.add_folder(str(episode["episode_number"]) + " - " + episode["title"], path={"episode": episode["id"]}, artwork=artwork, of=len(episodes), listInfo=listInfo, mediaType="video")
     if episodes["total_results"] > pageLastItem:
         addonHelper.add_folder("Next", path={"show": showId, "season": seasonNumber, "page": page+1}, artwork={"thumb": "next.png"})
 
@@ -365,7 +369,7 @@ elif selectedSeason and selectedShow:
     # if season is selected, show must also be selected
     # display the episodes for a season
     build_episode_folders(selectedShow, selectedSeason)
-    addonHelper.set_view_mode("508")
+#    addonHelper.set_view_mode("508")
     pass
 
 elif selectedShow:
@@ -399,3 +403,4 @@ else:
     load_root_folders()
 
 addonHelper.end()
+addonHelper.set_user_data(userData)
