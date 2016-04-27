@@ -10,15 +10,19 @@ class TheMovieDB :
         self.__apiKey = apiKey
         self.__apiPath = TheMovieDB.apiPath + TheMovieDB.apiVersion
         self.__apiKeyParam = urllib.urlencode({"api_key": self.__apiKey})
+        self.__imageBaseUrl = None
         # load config only if required
         #self.load_config()
     
     def load_config(self):
-        self.__imageBaseUrl= self.http_get_json("%s/configuration?%s", self.__apiPath, self.__apiKeyParam).images.secure_base_url
+        results = self.http_get_json("%s/configuration?%s" % (self.__apiPath, self.__apiKeyParam))
+        self.__imageBaseUrl= results["images"]["secure_base_url"]
         
     @staticmethod
     def http_get_json(url):
+        print "TheMovieDB URL: " + url
         response = urllib.urlopen(url)
+        print response
         j = json.load(response)
         return j
 

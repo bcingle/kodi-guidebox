@@ -6,6 +6,7 @@ import xbmcplugin
 import xbmcaddon
 import xbmc
 import json
+import os
 
 class AddonHelper(dict):
     '''
@@ -16,6 +17,7 @@ class AddonHelper(dict):
         self['base_url'] = args[0]
         self['xbmcaddon'] = xbmcaddon.Addon()
         self["addon_name"] = self["xbmcaddon"].getAddonInfo("name")
+        self["addon_id"] = self["xbmcaddon"].getAddonInfo("id")
         print "Base URL: " + str(self['base_url'])
         self['addon_handle'] = int(args[1])
         print "Addon Handle: " + str(self['addon_handle'])
@@ -26,6 +28,10 @@ class AddonHelper(dict):
         print "Parameters: " + str(self['params'])
         xbmcplugin.setContent(self['addon_handle'], 'movies')
         self['full_path'] = self['base_url'] + '?' + urllib.urlencode(self['params']);
+        self["user_data_folder"] = xbmc.translatePath("special://profile/addon_data/"+self['addon_id'])
+        if not os.path.isdir(self["user_data_folder"]):
+            os.path.mkdir(self["user_data_folder"])
+        self["user_data_json"] = os.path.join(self["user_data_folder"], "userdata.json")
 
     def build_url(self, query):
         """
@@ -56,7 +62,7 @@ class AddonHelper(dict):
         :param mediaType: String, type of media for listInfo, one of ['video', 'music', 'pictures'] - only applicable if listInfo is also defined
         :param listInfo: A dictionary with listInfo properties, as defined at http://mirrors.kodi.tv/docs/python-docs/16.x-jarvis/xbmcgui.html#ListItem-setInfo
         """
-        self.add_endpoint(label, url=self.build_url(path), folder=True, artwork=artwork, contextMenu=contextMenu, mediaType=mediaType, listInfo=listInfo)
+        self.add_endpoint(label, url=self.build_url(path), folder=True, artwork=artwork, contextMenu=contextMenu, mediaType=mediaType, listInfo=listInfo, overrideContextMenu=overrideContextMenu)
         print "Added a folder: " + label
         print path
 
@@ -181,3 +187,25 @@ class AddonHelper(dict):
         """
         print "Showing notification with message [" + message + "], time " + str(time) + " and sound " + str(sound)
         xbmcgui.Dialog().notification(self["addon_name"], message, time=time, sound=sound)
+    
+    def set_user_data(self, jsonData):
+        """
+        Set any JSON serializeabe data as the user's data. Writes to a file in the user's "special" folder for this addon.
+        :param jsonData: Any JSON serializeable data that you want to store for the user (if not serializeable, an error will be thrown)
+        """
+        jsonString = json.dumps(jsonData)
+        fh = open(self["user_data_json"], 'w')
+        fh.write(jsonString)
+        fh.close()
+        
+    def get_user_data(self):
+        """
+        Get full user data stored in the user's special folder
+        :returns: Whatever JSON data was set using the set_user_data() method (or None if no user data has been set)
+        """
+        if not os.path.isfile(self["user_data_json"]):
+            return None
+        fh = open(self["user_data_json"], 'r')
+        jsonData = json.load(fh)
+        fh.close()
+        return jsonData
