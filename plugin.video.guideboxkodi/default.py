@@ -10,11 +10,7 @@ chromeLauncherBaseUrl = "plugin://plugin.program.chrome.launcher/"
 print "Args: " + ";".join(sys.argv)
 
 addonHelper = AddonHelper(sys.argv)
-userData = addonHelper.get_user_data()
-if not userData:
-    userData = {}
-print "Addon user data: " + json.dumps(userData)
-guidebox = Guidebox(addonHelper.get_setting("guidebox-api-key"), userData)
+guidebox = Guidebox(addonHelper.get_setting("guidebox-api-key"), addonHelper.get_user_data("guidebox-cache"))
 theMovieDB = TheMovieDB(addonHelper.get_setting("themoviedb-api-key"))
 
 action = addonHelper.get_param("action")
@@ -60,6 +56,7 @@ sourceTypeStringCodes = {
 
 # Settings for a selection return the ordinal number which needs to be mapped to a key in the string codes dictionary
 sourceTypeSettingCodes = ["32003", "32004", "32005", "32006", "32007"]
+print addonHelper.get_setting("only-source")
 onlySourceType = sourceTypeStringCodes[sourceTypeSettingCodes[int(addonHelper.get_setting("only-source"))]]
 print "This is the Source setting: " + onlySourceType
 
@@ -403,4 +400,4 @@ else:
     load_root_folders()
 
 addonHelper.end()
-addonHelper.set_user_data(userData)
+addonHelper.set_user_data("guidebox-cache", guidebox.get_cache())

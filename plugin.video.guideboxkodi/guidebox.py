@@ -16,7 +16,7 @@ class Guidebox:
     def __init__(self, apiKey, cache):
         """
         :param apiKey: The API key provided by Guidebox
-        :param cache: The cached data 
+        :param cache: The cached data, expires after 24 hours
         """
         self.__apiKey = apiKey
         self.__version = "v1.43"
@@ -28,35 +28,23 @@ class Guidebox:
             "tv": "television",
             "online": "online"
         }
-        
-        self.__cache = cache
         now = datetime.now()
-        yesterday = now - timedelta(hours=24)
-        cacheTime = cache["cache_time"]
-        try:
-            cacheTime = datetime.strptime(cacheTime, "%c")
-        except TypeError:
-            cacheTime = datetime(*(time.strptime(cacheTime, "%c")[0:6]))
-        print cacheTime
-        print yesterday
-        if (cache):
+        if not cache:
+            cache = {}
+        if "cache_time" in cache:
+            # check the cache time to see if it is expired
+            now = datetime.now()
+            yesterday = now - timedelta(hours=24)
+            cacheTime = cache["cache_time"]
+            try:
+                cacheTime = datetime.strptime(cacheTime, "%c")
+            except TypeError:
+                cacheTime = datetime(*(time.strptime(cacheTime, "%c")[0:6]))
             if cacheTime < yesterday:
-                print "Clearing cache - Guidebox does not allow caching more than 24 hours"
-                cache["cache_time"] = datetime.strftime(now, '%c')
-                cache["shows_by_index"] = {}
-                cache["shows_by_id"] = {}
-                cache["channels_by_index"] = {}
-                cache["channels_by_type"] = {
-                    "tv": {},
-                    "online": {},
-                    "all": {}
-                }
-                cache["channels_by_id"] = {}
-                cache["episodes_by_index"] = {}
-                cache["episodes_by_id"] = {}
-                cache["sources_by_id"] = {}
-        else :
-            print "Clearing cache - it is empty"
+                cache = {}
+        
+        if cache == {}:
+            # setup the cache from scratch
             cache["cache_time"] = datetime.strftime(now, '%c')
             cache["shows_by_index"] = {}
             cache["shows_by_id"] = {}
@@ -70,6 +58,9 @@ class Guidebox:
             cache["episodes_by_index"] = {}
             cache["episodes_by_id"] = {}
             cache["sources_by_id"] = {}
+            
+        self.__cache = cache
+        
         pass
 
 
@@ -218,5 +209,6 @@ class Guidebox:
         query = self.build_query(["episode", episodeId, "images", "all"])
         return self.http_get(query)
 
-    
+    def get_cache(self):
+        return self.__cache
     
