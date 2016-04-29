@@ -230,10 +230,10 @@ def build_episode_folders(showId, seasonNumber):
 
 
 def build_source_type_folders(episodeId):
-    for id, sourceType in sourceTypeStringCodes.iteritems():
+    for key, sourceType in sourceTypeStringCodes.iteritems():
         if sourceType == "choose":
             continue
-        addonHelper.add_folder(addonHelper.get_string(id), path={"episode": episodeId, "sourceType": sourceType}, of=len(sourceTypeStringCodes))
+        addonHelper.add_folder(addonHelper.get_string(key), path={"episode": episodeId, "sourceType": sourceType}, of=len(sourceTypeStringCodes))
 
 
 def build_episode_links(episodeId, sourceType):
@@ -297,8 +297,8 @@ def remove_favorite_show(showId):
     return
 
 def load_root_folders():
-    for id, subfolder in rootFolders.iteritems():
-        addonHelper.add_folder(subfolder["label"], {"folder": id}, artwork=subfolder["art"])
+    for key, subfolder in rootFolders.iteritems():
+        addonHelper.add_folder(subfolder["label"], {"folder": key}, artwork=subfolder["art"])
 
 
 rootFolders = {

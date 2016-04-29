@@ -101,7 +101,7 @@ class AddonHelper(dict):
         :param viewMode: Optional param to set a view mode for the list
         """
         if viewMode:
-            this.set_view_mode(viewMode)
+            self.set_view_mode(viewMode)
         xbmcplugin.endOfDirectory(self['addon_handle'])
         print "Closed navigation"
 
@@ -111,19 +111,19 @@ class AddonHelper(dict):
         """
         return xbmc.getCondVisibility('System.Platform.' + platform)
         
-    def get_string(self, id):
+    def get_string(self, key):
         """
         Get a localized string from the strings.xml localization file
         :param id: The id of the string, given by a number lik '320001'
         """
-        return self['xbmcaddon'].getLocalizedString(int(id))
+        return self['xbmcaddon'].getLocalizedString(int(key))
 
-    def get_setting(self, id):
+    def get_setting(self, key):
         """
         Get the string representation of some setting from the user settings for this plugin
         :param id: The name of the setting to get
         """
-        return self['xbmcaddon'].getSetting(id)
+        return self['xbmcaddon'].getSetting(key)
     
     def set_setting(self, id, value):
         """
