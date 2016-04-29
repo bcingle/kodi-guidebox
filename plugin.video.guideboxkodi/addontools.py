@@ -7,6 +7,7 @@ import xbmcaddon
 import xbmc
 import json
 import os
+import pickle
 
 class AddonHelper(dict):
     '''
@@ -30,8 +31,8 @@ class AddonHelper(dict):
         self['full_path'] = self['base_url'] + '?' + urllib.urlencode(self['params']);
         self["user_data_folder"] = xbmc.translatePath("special://profile/addon_data/"+self['addon_id'])
         if not os.path.isdir(self["user_data_folder"]):
-            os.path.mkdir(self["user_data_folder"])
-        self["user_data_json"] = os.path.join(self["user_data_folder"], "userdata.json")
+            os.mkdir(self["user_data_folder"])
+        self["user_data_file"] = os.path.join(self["user_data_folder"], "userdata.json")
 
     def build_url(self, query):
         """
@@ -188,24 +189,30 @@ class AddonHelper(dict):
         print "Showing notification with message [" + message + "], time " + str(time) + " and sound " + str(sound)
         xbmcgui.Dialog().notification(self["addon_name"], message, time=time, sound=sound)
     
-    def set_user_data(self, jsonData):
+    def set_user_data(self, key, value):
         """
-        Set any JSON serializeabe data as the user's data. Writes to a file in the user's "special" folder for this addon.
-        :param jsonData: Any JSON serializeable data that you want to store for the user (if not serializeable, an error will be thrown)
+        Set any data or object as the user's data. Writes to a file in the user's "special" folder for this addon.
+        :param key: The key for the user data, must be a string or convertible to a string
+        :param value: The value for the user data, any data tupe (old value will be overwritten if key already exists)
         """
-        jsonString = json.dumps(jsonData)
-        fh = open(self["user_data_json"], 'w')
-        fh.write(jsonString)
-        fh.close()
+        if not os.path.isfile(self["user_data_file"]):
+            userData = {}
+        else:
+            userData = pickle.load(open(self["user_data_file"], "rb"))
+        userData[str(key)] = value
+        pickle.dump(userData, open(self["user_data_file"], "wb"))
         
-    def get_user_data(self):
+    def get_user_data(self, key):
         """
         Get full user data stored in the user's special folder
-        :returns: Whatever JSON data was set using the set_user_data() method (or None if no user data has been set)
+        :param key: The key for the data to be retrieved, must be a string or convertible to a string
+        :returns: The value stored in user data, or None if no value was stored with the given key
         """
-        if not os.path.isfile(self["user_data_json"]):
+        if not os.path.isfile(self["user_data_file"]):
             return None
-        fh = open(self["user_data_json"], 'r')
-        jsonData = json.load(fh)
-        fh.close()
-        return jsonData
+        userData = pickle.load(open(self["user_data_file"], "rb"))
+        key = str(key)
+        if key in userData:
+            return userData[key]
+        else:
+            return None

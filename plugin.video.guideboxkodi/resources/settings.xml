@@ -2,7 +2,7 @@
 <settings>
     <category label="32000">
         <setting label="32001" type="slider" id="page-size" default="8" range="1,25" option="int"/>
-        <setting label="32002" type="select" id="only-source" default="32003" lvalues="32003|32004|32005|32006|32007"/>
+        <setting label="32002" type="select" id="only-source" default="0" lvalues="32003|32004|32005|32006|32007"/>
     </category>
     <category label="32010">
         <setting label="32011" type="text" id="guidebox-api-key" default="rKt8jl2G47wjhqAVXtQcAYirK8AnYtw6"/>

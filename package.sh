@@ -19,3 +19,5 @@ fi
 
 zip -r "$zip" $PACKAGE
 
+cp "$zip" ../sigo-kodi-repository/dist/
+
