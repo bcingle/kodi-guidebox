@@ -1,2 +1,17 @@
 v0.1
 --Initial development
+
+v0.2
+---Bug fixes
+
+v0.3
+---Bug fixes
+
+v0.4
+---Bug fixes
+
+v0.5
+---Bug fixes
+
+v0.6
+--Added caching and Favorites support

@@ -1,3 +1,5 @@
+#!/usr/bin/env python2
+# -*- coding: utf-8 -*-
 
 import urlparse
 import urllib
@@ -29,25 +31,27 @@ class AddonHelper(dict):
         print "Parameters: " + str(self['params'])
         xbmcplugin.setContent(self['addon_handle'], 'movies')
         self['full_path'] = self['base_url'] + '?' + urllib.urlencode(self['params']);
+        print "Full path of this addon run: " + self["full_path"]
         self["user_data_folder"] = xbmc.translatePath("special://profile/addon_data/"+self['addon_id'])
         if not os.path.isdir(self["user_data_folder"]):
             os.mkdir(self["user_data_folder"])
-        self["user_data_file"] = os.path.join(self["user_data_folder"], "userdata.json")
+        self["user_data_file"] = os.path.join(self["user_data_folder"], "userdata.p")
 
     def build_url(self, query):
         """
         Build a url from a given query. The query should be a tuple in the form ["key1": "value1", "key2": "value2", ...]
         """
-        return self['base_url'] + '?' + urllib.urlencode(query)
+        url = self['base_url'] + '?' + urllib.urlencode(query)
+        print "Building addon URL: " + url
+        return url
 
     def get_param(self, name, default=None):
         """
         Get a parameter by name, as passed to the addon
         """
         print "Retrieving parameter " + name
-        params = self['params'].get(name, default)
-        if params:
-            return params[0]
+        if name in self['params']:
+            return self['params'][name][0]
         else:
             return default
 
@@ -64,7 +68,7 @@ class AddonHelper(dict):
         :param listInfo: A dictionary with listInfo properties, as defined at http://mirrors.kodi.tv/docs/python-docs/16.x-jarvis/xbmcgui.html#ListItem-setInfo
         """
         self.add_endpoint(label, url=self.build_url(path), folder=True, artwork=artwork, contextMenu=contextMenu, mediaType=mediaType, listInfo=listInfo, overrideContextMenu=overrideContextMenu)
-        print "Added a folder: " + label
+        #print "Added a folder: " + label
         print path
 
 
@@ -92,7 +96,7 @@ class AddonHelper(dict):
             print "Adding context menu items " + json.dumps(contextMenu)
             li.addContextMenuItems(contextMenu, overrideContextMenu)
         xbmcplugin.addDirectoryItem(handle=self['addon_handle'], url=url, listitem=li, isFolder=folder, totalItems=of)
-        print "Added navigation element to menu: " + label + " with path " + url
+        #print "Added navigation element to menu: " + label + " with path " + url
 
     def end(self, viewMode=None):
         """
@@ -125,11 +129,11 @@ class AddonHelper(dict):
         """
         return self['xbmcaddon'].getSetting(key)
     
-    def set_setting(self, id, value):
+    def set_setting(self, key, value):
         """
         Manually set some user setting
         """
-        self['xbmcaddon'].setSetting(id, value)
+        self['xbmcaddon'].setSetting(key, value)
         
     def navigate_now(self, path={}):
         """
@@ -137,6 +141,12 @@ class AddonHelper(dict):
         """
         path = self.build_url(path);
         xbmc.executebuiltin('RunPlugin(' + path + ')')
+        
+    def refresh_current_path(self):
+        """
+        Refresh the current path to accept changes that might have been made to data on the page
+        """
+        xbmc.executebuiltin('RunPlugin(' + self['full_path'] + ')')
         
     def get_current_path(self):
         """
@@ -198,7 +208,8 @@ class AddonHelper(dict):
         if not os.path.isfile(self["user_data_file"]):
             userData = {}
         else:
-            userData = pickle.load(open(self["user_data_file"], "rb"))
+            with open(self["user_data_file"], "rb") as f:
+                userData = pickle.load(f)
         userData[str(key)] = value
         pickle.dump(userData, open(self["user_data_file"], "wb"))
         
@@ -210,9 +221,48 @@ class AddonHelper(dict):
         """
         if not os.path.isfile(self["user_data_file"]):
             return None
-        userData = pickle.load(open(self["user_data_file"], "rb"))
+        with open(self["user_data_file"], "rb") as f:
+            userData = pickle.load(f)
         key = str(key)
         if key in userData:
             return userData[key]
         else:
             return None
+
+    def get_user_input_alphanum(self, heading="Enter text"):
+        d = xbmcgui.Dialog()
+        return d.input(heading, type=xbmcgui.INPUT_ALPHANUM)
+    
+    def get_user_input_date(self, heading="Enter date"):
+        d = xbmcgui.Dialog()
+        return d.input(heading, type=xbmcgui.INPUT_DATE)
+    
+    def get_user_input_ip(self, heading="Enter IP address"):
+        d = xbmcgui.Dialog()
+        return d.input(heading, type=xbmcgui.INPUT_IPADDRESS)
+    
+    def get_user_input_numeric(self, heading="Enter number"):
+        d = xbmcgui.Dialog()
+        return d.input(heading, type=xbmcgui.INPUT_NUMERIC)
+    
+    def get_user_input_time(self, heading="Enter time"):
+        d = xbmcgui.Dialog()
+        return d.input(heading, type=xbmcgui.INPUT_TIME)
+    
+    def get_user_input_password(self, heading="Enter password"):
+        d = xbmcgui.Dialog()
+        return d.input(heading, type=xbmcgui.INPUT_PASSWORD)
+    
+    def get_user_input_select(self, heading="Select one", options=[]):
+        if not options:
+            return None
+        d = xbmcgui.Dialog()
+        return d.select(heading, options)
+    
+    def get_user_input_yesno(self, heading="Choose an option", question="Yes or No?", nolabel = "No", yeslabel="Yes"):
+        d = xbmcgui.Dialog()
+        return d.yesno(heading, question, nolabel=nolabel, yeslabel=yeslabel)
+    
+    def open_addon_settings(self):
+        self["xbmcaddon"].openSettings()
+        

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <strings>
+	<!--  Settings -->
     <string id="32000">Addon Settings</string>
     <string id="32001">Fetch Page Size</string>
     <string id="32002">Always use this source type</string>
@@ -13,8 +14,18 @@
     <string id="32012">fanart.tv API Key</string>
     <string id="32013">TheTVDB API Key</string>
     <string id="32014">TheMovieDB API Key</string>
+    
+    <!-- Navigation elements -->
     <string id="32020">Favorites</string>
     <string id="32021">Favorite Channels</string>
-    <string id="32022">Favorite Shows</string>
-
+    <string id="32022">Favorite TV Shows</string>
+    <string id="32023">Browse Channels</string>
+    <string id="32024">Browse TV Shows</string>
+    <string id="32025">Browse Movies</string>
+    <string id="32026">Saved Movies</string>
+    <string id="32027">Search</string>
+    <string id="32028">Search Movies</string>
+    <string id="32029">Search Channels</string>
+    <string id="32030">Search TV Shows</string>
+    <string id="32031">Saved Episodes</string>
 </strings>

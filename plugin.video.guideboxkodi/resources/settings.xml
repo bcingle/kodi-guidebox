@@ -6,12 +6,6 @@
     </category>
     <category label="32010">
         <setting label="32011" type="text" id="guidebox-api-key" default="rKt8jl2G47wjhqAVXtQcAYirK8AnYtw6"/>
-        <setting label="32012" type="text" id="fanart-tv-api-key" default="26a00f5c62ede3937960671cac9cb400"/>
-        <setting label="32013" type="text" id="thetvdb-api-key" default="A52EA92456253FB8"/>
         <setting label="32014" type="text" id="themoviedb-api-key" default="ce121ae3543d9ffa41aa0db032d2ebe2"/>
-    </category>
-    <category label="32020">
-        <setting label="32021" type="text" id="favorite-channels" default=""/>
-        <setting label="32022" type="text" id="favorite-shows" default=""/>
     </category>
 </settings>

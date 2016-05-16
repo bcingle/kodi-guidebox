@@ -46,3 +46,21 @@ class TheMovieDB :
         if not self.__imageBaseUrl:
             self.load_config()
         return "%soriginal%s" % (self.__imageBaseUrl, results["stills"][0]["file_path"])
+    
+    def get_movie_images(self, movieId):
+        query = "%s/movie/%s/images?%s" % (self.__apiPath, movieId, self.__apiKeyParam)
+        results = self.http_get_json(query)
+        images = {
+            "poster": [],
+            "backdrop": []
+        }
+        if not self.__imageBaseUrl:
+            self.load_config()
+        if "backdrops" in results:
+            images["backdrop"] = "%soriginal%s" % (self.__imageBaseUrl, results["backdrops"][0]["file_path"])
+        if "posters" in results:
+            images["poster"] = "%soriginal%s" % (self.__imageBaseUrl, results["posters"][0]["file_path"])
+        return images
+        
+        
+        
